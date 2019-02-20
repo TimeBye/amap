@@ -1,0 +1,554 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <title>高德地图周边搜索</title>
+    <link rel="stylesheet" href="https://a.amap.com/jsapi_demos/static/demo-center/css/demo-center.css"/>
+    <script type="text/javascript" src="https://cache.amap.com/lbs/static/addToolbar.js"></script>
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.2/css/select2.min.css" rel="stylesheet"/>
+</head>
+<style type="text/css">
+    html, body {
+        width: 100%;
+        height: 100%;
+        margin: 0px;
+    }
+</style>
+<body>
+<div id="allbody" style="height: 100%;width: 100%">
+    <div class="panel panel-primary" style="margin-bottom: 1px; height: 20%;">
+        <div class="panel-heading">
+            <h3 class="panel-title">参数设置</h3>
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-2">
+                    <h5>中心点坐标（location）</h5>
+                    <h7>鼠标拾取地图坐标</h7>
+                </div>
+                <div class="col-md-2">
+                    <h5>关键字（keywords）</h5>
+                    <h7>多个关键字用“|”分割</h7>
+                </div>
+                <div class="col-md-2">
+                    <h5>商户类型（types）</h5>
+                    <h7>可以选择多个</h7>
+                </div>
+                <div class="col-md-2">
+                    <h5>城市（city）</h5>
+                    <h7>当指定的经纬度和城市出现冲突时以经纬度为准</h7>
+                </div>
+                <div class="col-md-2">
+                    <h5>查询半径（radius）</h5>
+                    <h7>取值范围:0-50000。规则：大于50000按默认值3000，单位：米</h7>
+                </div>
+                <div class="col-md-2">
+                    <h5>排序规则（sortrule）</h5>
+                    <h7>距离排序：distance；综合排序：weight。默认值：distance</h7>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-2">
+                    <div class="input-item">
+                        <input type="text" readonly="true" id="lnglat" value="104.06618,30.528077">
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="input-item">
+                        <input type="text" id="keywords">
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="input-item">
+                        <select class="types-multiple" id="types" multiple="multiple">
+                            <option value="050000">餐饮</option>
+                            <option value="060000">购物</option>
+                            <option value="070000">生活服务</option>
+                            <option value="010000">汽车服务</option>
+                            <option value="020000">汽车销售</option>
+                            <option value="030000">汽车维修</option>
+                            <option value="040000">摩托车服务</option>
+                            <option value="080000">体育休闲</option>
+                            <option value="090000">医疗保健</option>
+                            <option value="100000">住宿服务</option>
+                            <option value="110000">风景名胜</option>
+                            <option value="120000">商务住宅</option>
+                            <option value="130000">政府及社会团体</option>
+                            <option value="140000">科教文化</option>
+                            <option value="150000">交通服务</option>
+                            <option value="160000">金融保险服务机构</option>
+                            <option value="170000">公司企业</option>
+                            <option value="180000">道路附属设施</option>
+                            <option value="190000">地名地址信息</option>
+                            <option value="200000">公共设施</option>
+                            <option value="220000">事件活动</option>
+                            <option value="970000">室内设施</option>
+                            <option value="990000">通行设施</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="input-item">
+                        <select class="city-single" id="city">
+                            <option value="">--请选择--</option>
+                            <option value="028">成都市</option>
+                            <option value="0839">广元市</option>
+                            <option value="0813">自贡市</option>
+                            <option value="0812">攀枝花市</option>
+                            <option value="0830">泸州市</option>
+                            <option value="0838">德阳市</option>
+                            <option value="0816">绵阳市</option>
+                            <option value="0825">遂宁市</option>
+                            <option value="1832">内江市</option>
+                            <option value="0833">乐山市</option>
+                            <option value="0817">南充市</option>
+                            <option value="1833">眉山市</option>
+                            <option value="0831">宜宾市</option>
+                            <option value="0826">广安市</option>
+                            <option value="0818">达州市</option>
+                            <option value="0835">雅安市</option>
+                            <option value="0827">巴中市</option>
+                            <option value="0832">资阳市</option>
+                            <option value="023">重庆市</option>
+                            <option value="010">北京市</option>
+                            <option value="022">天津市</option>
+                            <option value="0311">石家庄市</option>
+                            <option value="0315">唐山市</option>
+                            <option value="0335">秦皇岛市</option>
+                            <option value="0310">邯郸市</option>
+                            <option value="0319">邢台市</option>
+                            <option value="0312">保定市</option>
+                            <option value="0313">张家口市</option>
+                            <option value="0314">承德市</option>
+                            <option value="0317">沧州市</option>
+                            <option value="0316">廊坊市</option>
+                            <option value="0318">衡水市</option>
+                            <option value="0351">太原市</option>
+                            <option value="0352">大同市</option>
+                            <option value="0353">阳泉市</option>
+                            <option value="0355">长治市</option>
+                            <option value="0356">晋城市</option>
+                            <option value="0349">朔州市</option>
+                            <option value="0354">晋中市</option>
+                            <option value="0359">运城市</option>
+                            <option value="0350">忻州市</option>
+                            <option value="0357">临汾市</option>
+                            <option value="0358">吕梁市</option>
+                            <option value="0471">呼和浩特市</option>
+                            <option value="0472">包头市</option>
+                            <option value="0473">乌海市</option>
+                            <option value="0476">赤峰市</option>
+                            <option value="0475">通辽市</option>
+                            <option value="0477">鄂尔多斯市</option>
+                            <option value="0470">呼伦贝尔市</option>
+                            <option value="0478">巴彦淖尔市</option>
+                            <option value="0474">乌兰察布市</option>
+                            <option value="0482">兴安盟</option>
+                            <option value="0479">锡林郭勒盟</option>
+                            <option value="0483">阿拉善盟</option>
+                            <option value="024">沈阳市</option>
+                            <option value="0411">大连市</option>
+                            <option value="0412">鞍山市</option>
+                            <option value="0413">抚顺市</option>
+                            <option value="0414">本溪市</option>
+                            <option value="0415">丹东市</option>
+                            <option value="0416">锦州市</option>
+                            <option value="0417">营口市</option>
+                            <option value="0418">阜新市</option>
+                            <option value="0419">辽阳市</option>
+                            <option value="0427">盘锦市</option>
+                            <option value="0410">铁岭市</option>
+                            <option value="0421">朝阳市</option>
+                            <option value="0429">葫芦岛市</option>
+                            <option value="0431">长春市</option>
+                            <option value="0432">吉林市</option>
+                            <option value="0434">四平市</option>
+                            <option value="0437">辽源市</option>
+                            <option value="0435">通化市</option>
+                            <option value="0439">白山市</option>
+                            <option value="0438">松原市</option>
+                            <option value="0436">白城市</option>
+                            <option value="1433">延边朝鲜族自治州</option>
+                            <option value="0451">哈尔滨市</option>
+                            <option value="0452">齐齐哈尔市</option>
+                            <option value="0467">鸡西市</option>
+                            <option value="0468">鹤岗市</option>
+                            <option value="0469">双鸭山市</option>
+                            <option value="0459">大庆市</option>
+                            <option value="0458">伊春市</option>
+                            <option value="0454">佳木斯市</option>
+                            <option value="0464">七台河市</option>
+                            <option value="0453">牡丹江市</option>
+                            <option value="0456">黑河市</option>
+                            <option value="0455">绥化市</option>
+                            <option value="0457">大兴安岭地区</option>
+                            <option value="021">上海市</option>
+                            <option value="025">南京市</option>
+                            <option value="0510">无锡市</option>
+                            <option value="0516">徐州市</option>
+                            <option value="0519">常州市</option>
+                            <option value="0512">苏州市</option>
+                            <option value="0513">南通市</option>
+                            <option value="0518">连云港市</option>
+                            <option value="0517">淮安市</option>
+                            <option value="0515">盐城市</option>
+                            <option value="0514">扬州市</option>
+                            <option value="0511">镇江市</option>
+                            <option value="0523">泰州市</option>
+                            <option value="0527">宿迁市</option>
+                            <option value="0571">杭州市</option>
+                            <option value="0574">宁波市</option>
+                            <option value="0577">温州市</option>
+                            <option value="0573">嘉兴市</option>
+                            <option value="0572">湖州市</option>
+                            <option value="0575">绍兴市</option>
+                            <option value="0579">金华市</option>
+                            <option value="0570">衢州市</option>
+                            <option value="0580">舟山市</option>
+                            <option value="0576">台州市</option>
+                            <option value="0578">丽水市</option>
+                            <option value="0551">合肥市</option>
+                            <option value="0553">芜湖市</option>
+                            <option value="0552">蚌埠市</option>
+                            <option value="0554">淮南市</option>
+                            <option value="0555">马鞍山市</option>
+                            <option value="0561">淮北市</option>
+                            <option value="0562">铜陵市</option>
+                            <option value="0556">安庆市</option>
+                            <option value="0559">黄山市</option>
+                            <option value="0550">滁州市</option>
+                            <option value="1558">阜阳市</option>
+                            <option value="0557">宿州市</option>
+                            <option value="0564">六安市</option>
+                            <option value="0558">亳州市</option>
+                            <option value="0566">池州市</option>
+                            <option value="0563">宣城市</option>
+                            <option value="0591">福州市</option>
+                            <option value="0592">厦门市</option>
+                            <option value="0594">莆田市</option>
+                            <option value="0598">三明市</option>
+                            <option value="0595">泉州市</option>
+                            <option value="0596">漳州市</option>
+                            <option value="0599">南平市</option>
+                            <option value="0597">龙岩市</option>
+                            <option value="0593">宁德市</option>
+                            <option value="0791">南昌市</option>
+                            <option value="0798">景德镇市</option>
+                            <option value="0799">萍乡市</option>
+                            <option value="0792">九江市</option>
+                            <option value="0790">新余市</option>
+                            <option value="0701">鹰潭市</option>
+                            <option value="0797">赣州市</option>
+                            <option value="0796">吉安市</option>
+                            <option value="0795">宜春市</option>
+                            <option value="0794">抚州市</option>
+                            <option value="0793">上饶市</option>
+                            <option value="0531">济南市</option>
+                            <option value="0532">青岛市</option>
+                            <option value="0533">淄博市</option>
+                            <option value="0632">枣庄市</option>
+                            <option value="0546">东营市</option>
+                            <option value="0535">烟台市</option>
+                            <option value="0536">潍坊市</option>
+                            <option value="0537">济宁市</option>
+                            <option value="0538">泰安市</option>
+                            <option value="0631">威海市</option>
+                            <option value="0633">日照市</option>
+                            <option value="0634">莱芜市</option>
+                            <option value="0539">临沂市</option>
+                            <option value="0534">德州市</option>
+                            <option value="0635">聊城市</option>
+                            <option value="0543">滨州市</option>
+                            <option value="0530">菏泽市</option>
+                            <option value="0371">郑州市</option>
+                            <option value="0378">开封市</option>
+                            <option value="0379">洛阳市</option>
+                            <option value="0375">平顶山市</option>
+                            <option value="0372">安阳市</option>
+                            <option value="0392">鹤壁市</option>
+                            <option value="0373">新乡市</option>
+                            <option value="0391">焦作市</option>
+                            <option value="0393">濮阳市</option>
+                            <option value="0374">许昌市</option>
+                            <option value="0395">漯河市</option>
+                            <option value="0398">三门峡市</option>
+                            <option value="0377">南阳市</option>
+                            <option value="0370">商丘市</option>
+                            <option value="0376">信阳市</option>
+                            <option value="0394">周口市</option>
+                            <option value="0396">驻马店市</option>
+                            <option value="1391">济源市</option>
+                            <option value="027">武汉市</option>
+                            <option value="0714">黄石市</option>
+                            <option value="0719">十堰市</option>
+                            <option value="0717">宜昌市</option>
+                            <option value="0710">襄阳市</option>
+                            <option value="0711">鄂州市</option>
+                            <option value="0724">荆门市</option>
+                            <option value="0712">孝感市</option>
+                            <option value="0716">荆州市</option>
+                            <option value="0713">黄冈市</option>
+                            <option value="0715">咸宁市</option>
+                            <option value="0722">随州市</option>
+                            <option value="0718">恩施土家族苗族自治州</option>
+                            <option value="0728">仙桃市</option>
+                            <option value="2728">潜江市</option>
+                            <option value="1728">天门市</option>
+                            <option value="1719">神农架林区</option>
+                            <option value="0731">长沙市</option>
+                            <option value="0733">株洲市</option>
+                            <option value="0732">湘潭市</option>
+                            <option value="0734">衡阳市</option>
+                            <option value="0739">邵阳市</option>
+                            <option value="0730">岳阳市</option>
+                            <option value="0736">常德市</option>
+                            <option value="0744">张家界市</option>
+                            <option value="0737">益阳市</option>
+                            <option value="0735">郴州市</option>
+                            <option value="0746">永州市</option>
+                            <option value="0745">怀化市</option>
+                            <option value="0738">娄底市</option>
+                            <option value="0743">湘西土家族苗族自治州</option>
+                            <option value="020">广州市</option>
+                            <option value="0751">韶关市</option>
+                            <option value="0755">深圳市</option>
+                            <option value="0756">珠海市</option>
+                            <option value="0754">汕头市</option>
+                            <option value="0757">佛山市</option>
+                            <option value="0750">江门市</option>
+                            <option value="0759">湛江市</option>
+                            <option value="0668">茂名市</option>
+                            <option value="0758">肇庆市</option>
+                            <option value="0752">惠州市</option>
+                            <option value="0753">梅州市</option>
+                            <option value="0660">汕尾市</option>
+                            <option value="0762">河源市</option>
+                            <option value="0662">阳江市</option>
+                            <option value="0763">清远市</option>
+                            <option value="0769">东莞市</option>
+                            <option value="0760">中山市</option>
+                            <option value="0768">潮州市</option>
+                            <option value="0663">揭阳市</option>
+                            <option value="0766">云浮市</option>
+                            <option value="0771">南宁市</option>
+                            <option value="0772">柳州市</option>
+                            <option value="0773">桂林市</option>
+                            <option value="0774">梧州市</option>
+                            <option value="0779">北海市</option>
+                            <option value="0770">防城港市</option>
+                            <option value="0777">钦州市</option>
+                            <option value="1755">贵港市</option>
+                            <option value="0775">玉林市</option>
+                            <option value="0776">百色市</option>
+                            <option value="1774">贺州市</option>
+                            <option value="0778">河池市</option>
+                            <option value="1772">来宾市</option>
+                            <option value="1771">崇左市</option>
+                            <option value="0898">海口市</option>
+                            <option value="0899">三亚市</option>
+                            <option value="2898">三沙市</option>
+                            <option value="1895">西沙群岛</option>
+                            <option value="1891">南沙群岛</option>
+                            <option value="2801">中沙群岛的岛礁及其海域</option>
+                            <option value="0805">儋州市</option>
+                            <option value="1897">五指山市</option>
+                            <option value="1894">琼海市</option>
+                            <option value="1893">文昌市</option>
+                            <option value="1898">万宁市</option>
+                            <option value="0807">东方市</option>
+                            <option value="0806">定安县</option>
+                            <option value="1892">屯昌县</option>
+                            <option value="0804">澄迈县</option>
+                            <option value="1896">临高县</option>
+                            <option value="0802">白沙黎族自治县</option>
+                            <option value="0803">昌江黎族自治县</option>
+                            <option value="2802">乐东黎族自治县</option>
+                            <option value="0809">陵水黎族自治县</option>
+                            <option value="0801">保亭黎族苗族自治县</option>
+                            <option value="1899">琼中黎族苗族自治县</option>
+                            <option value="0837">阿坝藏族羌族自治州</option>
+                            <option value="0836">甘孜藏族自治州</option>
+                            <option value="0834">凉山彝族自治州</option>
+                            <option value="0851">贵阳市</option>
+                            <option value="0858">六盘水市</option>
+                            <option value="0852">遵义市</option>
+                            <option value="0853">安顺市</option>
+                            <option value="0857">毕节市</option>
+                            <option value="0856">铜仁市</option>
+                            <option value="0859">黔西南布依族苗族自治州</option>
+                            <option value="0855">黔东南苗族侗族自治州</option>
+                            <option value="0854">黔南布依族苗族自治州</option>
+                            <option value="0871">昆明市</option>
+                            <option value="0874">曲靖市</option>
+                            <option value="0877">玉溪市</option>
+                            <option value="0875">保山市</option>
+                            <option value="0870">昭通市</option>
+                            <option value="0888">丽江市</option>
+                            <option value="0879">普洱市</option>
+                            <option value="0883">临沧市</option>
+                            <option value="0878">楚雄彝族自治州</option>
+                            <option value="0873">红河哈尼族彝族自治州</option>
+                            <option value="0876">文山壮族苗族自治州</option>
+                            <option value="0691">西双版纳傣族自治州</option>
+                            <option value="0872">大理白族自治州</option>
+                            <option value="0692">德宏傣族景颇族自治州</option>
+                            <option value="0886">怒江傈僳族自治州</option>
+                            <option value="0887">迪庆藏族自治州</option>
+                            <option value="0891">拉萨市</option>
+                            <option value="0892">日喀则市</option>
+                            <option value="0895">昌都市</option>
+                            <option value="0894">林芝市</option>
+                            <option value="0893">山南市</option>
+                            <option value="0896">那曲市</option>
+                            <option value="0897">阿里地区</option>
+                            <option value="029">西安市</option>
+                            <option value="0919">铜川市</option>
+                            <option value="0917">宝鸡市</option>
+                            <option value="0910">咸阳市</option>
+                            <option value="0913">渭南市</option>
+                            <option value="0911">延安市</option>
+                            <option value="0916">汉中市</option>
+                            <option value="0912">榆林市</option>
+                            <option value="0915">安康市</option>
+                            <option value="0914">商洛市</option>
+                            <option value="0931">兰州市</option>
+                            <option value="1937">嘉峪关市</option>
+                            <option value="0935">金昌市</option>
+                            <option value="0943">白银市</option>
+                            <option value="0938">天水市</option>
+                            <option value="1935">武威市</option>
+                            <option value="0936">张掖市</option>
+                            <option value="0933">平凉市</option>
+                            <option value="0937">酒泉市</option>
+                            <option value="0934">庆阳市</option>
+                            <option value="0932">定西市</option>
+                            <option value="2935">陇南市</option>
+                            <option value="0930">临夏回族自治州</option>
+                            <option value="0941">甘南藏族自治州</option>
+                            <option value="0971">西宁市</option>
+                            <option value="0972">海东市</option>
+                            <option value="0970">海北藏族自治州</option>
+                            <option value="0973">黄南藏族自治州</option>
+                            <option value="0974">海南藏族自治州</option>
+                            <option value="0975">果洛藏族自治州</option>
+                            <option value="0976">玉树藏族自治州</option>
+                            <option value="0977">海西蒙古族藏族自治州</option>
+                            <option value="0951">银川市</option>
+                            <option value="0952">石嘴山市</option>
+                            <option value="0953">吴忠市</option>
+                            <option value="0954">固原市</option>
+                            <option value="1953">中卫市</option>
+                            <option value="0991">乌鲁木齐市</option>
+                            <option value="0990">克拉玛依市</option>
+                            <option value="0995">吐鲁番市</option>
+                            <option value="0902">哈密市</option>
+                            <option value="0994">昌吉回族自治州</option>
+                            <option value="0909">博尔塔拉蒙古自治州</option>
+                            <option value="0996">巴音郭楞蒙古自治州</option>
+                            <option value="0997">阿克苏地区</option>
+                            <option value="0908">克孜勒苏柯尔克孜自治州</option>
+                            <option value="0998">喀什地区</option>
+                            <option value="0903">和田地区</option>
+                            <option value="0999">伊犁哈萨克自治州</option>
+                            <option value="0901">塔城地区</option>
+                            <option value="0906">阿勒泰地区</option>
+                            <option value="0993">石河子市</option>
+                            <option value="1997">阿拉尔市</option>
+                            <option value="1998">图木舒克市</option>
+                            <option value="1994">五家渠市</option>
+                            <option value="1906">北屯市</option>
+                            <option value="1996">铁门关市</option>
+                            <option value="1909">双河市</option>
+                            <option value="1999">可克达拉市</option>
+                            <option value="1903">昆玉市</option>
+                            <option value="1886">台湾省</option>
+                            <option value="1852">香港特别行政区</option>
+                            <option value="1853">澳门特别行政区</option>
+                            <option value="1900">外国</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="input-item">
+                        <input class="form-control" id="radius" type="number" value="3000" min="0" max="50000"
+                               step="1000">
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="input-item">
+                        <select class="sortrule-single" id="sortrule">
+                            <option value="distance">距离排序</option>
+                            <option value="weight">综合排序</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="container" class="map" style="width: 100%;height: 80%;float: left"></div>
+</div>
+<script src="https://webapi.amap.com/maps?v=1.4.12&key={{ .APIKey }}&plugin=AMap.Autocomplete"></script>
+<script type="text/javascript">
+    var map = new AMap.Map("container", {
+        resizeEnable: true
+    });
+    //为地图注册click事件获取鼠标点击出的经纬度坐标
+    map.on('click', function (e) {
+        document.getElementById("lnglat").value = e.lnglat.getLng() + ',' + e.lnglat.getLat()
+    });
+    var auto = new AMap.Autocomplete({
+        input: "tipinput"
+    });
+    AMap.event.addListener(auto, "select", select);//注册监听，当选中某条记录时会触发
+    function select(e) {
+        if (e.poi && e.poi.location) {
+            map.setZoom(15);
+            map.setCenter(e.poi.location);
+        }
+    }
+</script>
+<!-- jQuery (Bootstrap 的所有 JavaScript 插件都依赖 jQuery，所以必须放在前边) -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<!-- 加载 Bootstrap 的所有 JavaScript 插件。你也可以根据需要只加载单个插件。 -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js"></script>
+<script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.2/js/select2.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(".types-multiple").select2({
+            allowClear: true
+        });
+        $(".city-single").select2({
+            allowClear: true
+        });
+    });
+    $(document).keyup(function (e) {
+        var key = e.which;
+        if (key == 13) {
+            var location = $("#lnglat").val();
+            var keywords = $("#keywords").val();
+            var types = $("#types").val();
+            var city = $("#city").val();
+            var radius = $("#radius").val();
+            var sortrule = $("#sortrule").val();
+            if (types == null) {
+                types = ""
+            } else {
+                types = types.toString().replace(/,/g, "|")
+            }
+            window.location.href = "/around?"
+                + "&location=" + location
+                + "&keywords=" + keywords
+                + "&types=" + types
+                + "&radius=" + radius
+                + "&city=" + city
+                + "&sortrule=" + sortrule
+        }
+    });
+</script>
+</body>
+</html>
