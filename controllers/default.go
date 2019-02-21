@@ -46,7 +46,11 @@ func GetResult(p models.Parameters, page int, wg *sync.WaitGroup) {
 	if errors != nil {
 		beego.Error(errors, string(bytes), response)
 	}
-	pois = append(pois, r.Pois...)
+	for _, poi := range r.Pois {
+		if v, ok := poi.Tel.(string); ok && len(v) > 3 {
+			pois = append(pois, poi)
+		}
+	}
 	wg.Done()
 }
 
@@ -66,7 +70,11 @@ func GetResults(p models.Parameters) []models.Poi {
 	if errors != nil {
 		beego.Error(errors, string(bytes), response)
 	}
-	pois = append(pois, r.Pois...)
+	for _, poi := range r.Pois {
+		if v, ok := poi.Tel.(string); ok && len(v) > 3 {
+			pois = append(pois, poi)
+		}
+	}
 	rC, _ := strconv.Atoi(r.Count)
 	pages := rC/offset + 1
 	wg := sync.WaitGroup{}
